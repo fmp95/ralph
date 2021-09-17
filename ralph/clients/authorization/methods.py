@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from bcrypt import checkpw
 from jose import jwt
 
-from ralph.common.exceptions import InvalidCredentialException
 from ralph.clients.authorization.models import User
+from ralph.common.exceptions import InvalidCredentialException
 from ralph.common.logger import get_logger
 from settings import JWT_ALGORITHM, JWT_SECRET, JWT_TIMEDELTA_IN_MINUTES
 

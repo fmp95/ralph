@@ -6,10 +6,10 @@ that can be imported by other modules. It will also check if logs folder exists 
 if not, will create one, so it can store log files.
 """
 
-from datetime import datetime
-from os import path, mkdir
 import logging
 import sys
+from datetime import datetime
+from os import mkdir, path
 
 # Check if logs folder exists.
 if not path.exists("logs"):

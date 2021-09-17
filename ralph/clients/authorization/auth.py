@@ -2,9 +2,8 @@ from typing import List
 
 from jose import JWTError, jwt
 from ninja.security import HttpBearer
-
+from ralph.clients.authorization.models import Role, User
 from ralph.common.exceptions import InvalidTokenException, UnauthorizedException
-from ralph.clients.authorization.models import User, Role
 from ralph.common.logger import get_logger
 from settings import JWT_ALGORITHM, JWT_SECRET
 
