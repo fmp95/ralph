@@ -1,4 +1,4 @@
-from pydantic import constr, validator
+from pydantic import validator
 
 from ralph.clients.registration.validations import (
     check_same_password,
