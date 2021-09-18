@@ -141,7 +141,7 @@ class Authorization(HttpBearer):
         # If any authorization isn't met, raises unauthorized expection.
         if not all(authorizations.values()):
             logger.warning("User doesn't have necessary authorization.")
-            raise UnauthorizedException
+            raise UnauthorizedException("User doesn't have necessary authorization.")
 
         return AuthorizationResponse(
             uuid=decoded_token.get("iss"),
@@ -176,7 +176,7 @@ class Authorization(HttpBearer):
             decoded_token = jwt.decode(token, JWT_SECRET, JWT_ALGORITHM)
         except JWTError as exc:
             logger.warning("Token is not valid. Error: %s.", str(exc))
-            raise InvalidTokenException from exc
+            raise InvalidTokenException("Token is not valid.") from exc
 
         return decoded_token
 
@@ -202,7 +202,7 @@ class Authorization(HttpBearer):
             )
         except User.DoesNotExist as exc:
             logger.warning("User doesn't exist.")
-            raise InvalidTokenException from exc
+            raise InvalidTokenException("User doesnt' exist.") from exc
 
     @staticmethod
     def get_user_roles(user: User) -> List[str]:

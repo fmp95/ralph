@@ -30,14 +30,14 @@ def login(username: str, password: str) -> str:
         user = User.objects.filter(username=username).get()
     except User.DoesNotExist as exc:
         logger.warning("No user found with given username.")
-        raise InvalidCredentialException from exc
+        raise InvalidCredentialException("User not found.") from exc
 
     logger.info("User found. Checking password (No log if correct password).")
 
     # Check if password is correct.
     if not checkpw(password.encode(), user.password.encode()):
         logger.warning("Invalid password: %s", password)
-        raise InvalidCredentialException
+        raise InvalidCredentialException("Password is incorrect.")
 
     return _generate_token(user.user_uuid)
 
