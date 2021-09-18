@@ -30,3 +30,25 @@ class InvalidCredentialException(Exception):
     """
 
     ...
+
+
+class ValidationException(Exception):
+
+    """
+    Custom exception for unmet validation.
+
+    This exception is raised when a validation doesn't meet necessary criteria.
+    """
+
+    ...
+
+
+class BadRequestException(Exception):
+
+    """
+    Custom exception for bad request.
+
+    This exception is raised when a bad request is passed to service.
+    """
+
+    ...
