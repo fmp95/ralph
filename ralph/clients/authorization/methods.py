@@ -39,10 +39,10 @@ def login(username: str, password: str) -> str:
         logger.warning("Invalid password: %s", password)
         raise InvalidCredentialException("Password is incorrect.")
 
-    return _generate_token(user.user_uuid)
+    return generate_token(user.user_uuid)
 
 
-def _generate_token(user_uuid: str) -> str:
+def generate_token(user_uuid: str) -> str:
 
     """
     Generates a bearer token.
