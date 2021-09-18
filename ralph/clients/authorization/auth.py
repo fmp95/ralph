@@ -1,7 +1,9 @@
-from typing import List
+from typing import List, Dict
 
+from django.http import HttpRequest
 from jose import JWTError, jwt
 from ninja.security import HttpBearer
+
 from ralph.clients.authorization.models import Role, User
 from ralph.common.exceptions import InvalidTokenException, UnauthorizedException
 from ralph.common.logger import get_logger
@@ -46,12 +48,12 @@ class Authorization(HttpBearer):
         super().__init__()
 
         # Set passed roles as instance parameter.
-        self.roles = roles if roles else []
+        self.roles = roles or []
 
         # Set passed permissions as instance parameter.
-        self.permissions = permissions if permissions else []
+        self.permissions = permissions or []
 
-    def authenticate(self, request: object, token: str) -> dict:
+    def authenticate(self, request: HttpRequest, token: str) -> dict:
 
         """
         Authenticate access based on configuration passed to constructor.
@@ -60,7 +62,7 @@ class Authorization(HttpBearer):
         to instance constructor.
 
         Args:
-            request (object): Object containing request information.
+            request (HttpRequest): Object containing request information.
             token (str): Bearer token passed via header.
 
         Returns:
@@ -80,12 +82,12 @@ class Authorization(HttpBearer):
         decoded_token = self.decode_token(token)
 
         # Retrieve UUID from payload.
-        uuid = decoded_token.get("iss")
+        user_uuid = decoded_token.get("iss")
 
-        logger.info("User uuid: %s.", uuid)
+        logger.info("User uuid: %s.", user_uuid)
 
         # Try to get user object from UUID.
-        user = self.get_user(uuid)
+        user = self.get_user(user_uuid)
 
         # Get roles from user.
         user_roles = self.get_user_roles(user)
@@ -124,7 +126,7 @@ class Authorization(HttpBearer):
         }
 
     @staticmethod
-    def decode_token(token: str) -> dict:
+    def decode_token(token: str) -> Dict[str, str]:
 
         """
         Checks if token is valid and decodes it.
@@ -136,7 +138,7 @@ class Authorization(HttpBearer):
             token (str): Bearer token.
 
         Returns:
-            dict: Payload information stored in token.
+            Dict[str, str]: Payload information stored in token.
         """
 
         # Try to decode token.
@@ -150,7 +152,7 @@ class Authorization(HttpBearer):
         return decoded_token
 
     @staticmethod
-    def get_user(uuid: str) -> object:
+    def get_user(user_uuid: str) -> User:
 
         """
         Get user object from database.
@@ -161,12 +163,12 @@ class Authorization(HttpBearer):
             uuid (str): User uuid to filter entries.
 
         Returns:
-            object: Object with user information.
+            User: Object with user information.
         """
 
         # Try to get user object.
         try:
-            return User.objects.prefetch_related("roles").filter(uuid=uuid).get()
+            return User.objects.prefetch_related("roles").filter(uuid=user_uuid).get()
         except User.DoesNotExist as exc:
             logger.warning("User doesn't exist.")
             raise InvalidTokenException from exc
@@ -188,12 +190,12 @@ class Authorization(HttpBearer):
         """
 
         # Retrieve user roles.
-        user_roles = [role.name for role in user.roles.all()]
+        user_roles = list(user.roles.values_list("name", flat=True).distinct())
 
         return user_roles
 
     @staticmethod
-    def get_user_permissions(roles: List[str]) -> bool:
+    def get_user_permissions(roles: List[str]) -> List[str]:
 
         """
         Get roles permission names.
@@ -208,13 +210,13 @@ class Authorization(HttpBearer):
             List[str]: List of permissions names.
         """
 
-        # Get role objects of user roles.
-        roles = Role.objects.prefetch_related("permissions").filter(name__in=roles)
-
-        # Get user permission based on permissions of their roles.
-        user_permissions = [
-            permission.name for role in roles for permission in role.permissions.all()
-        ]
+        # Get user permissions.
+        user_permissions = (
+            Role.objects.prefetch_related("permissions")
+            .filter(name__in=roles)
+            .values_list("permissions__name", flat=True)
+            .distinct()
+        )
 
         # Use set to remove duplicates.
         return list(set(user_permissions))
