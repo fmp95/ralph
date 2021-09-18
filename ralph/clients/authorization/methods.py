@@ -39,10 +39,10 @@ def login(username: str, password: str) -> str:
         logger.warning("Invalid password: %s", password)
         raise InvalidCredentialException
 
-    return _generate_token(user.uuid)
+    return _generate_token(user.user_uuid)
 
 
-def _generate_token(uuid: str) -> str:
+def _generate_token(user_uuid: str) -> str:
 
     """
     Generates a bearer token.
@@ -58,7 +58,7 @@ def _generate_token(uuid: str) -> str:
 
     # Create payload for JWT token.
     payload = {
-        "iss": uuid,
+        "iss": user_uuid,
         "iat": datetime.utcnow(),
         "exp": datetime.utcnow() + timedelta(minutes=JWT_TIMEDELTA_IN_MINUTES),
     }
