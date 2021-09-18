@@ -12,7 +12,7 @@ class User(models.Model):
     This class models database table to store user information.
 
     Attributes:
-        uuid (object): VARCHAR column to store user unique identifier.
+        user_uuid (object): VARCHAR column to store user unique identifier.
         username (object): VARCHAR column to store user username.
         password (object): VARCHAR column to store user password.
         email (object): VARCHAR column to store user email address.
@@ -24,8 +24,12 @@ class User(models.Model):
         roles (object): MANYTOMANY relation between user table and role table.
     """
 
-    uuid = models.CharField(
-        max_length=40, primary_key=True, default=uuid.uuid4, null=False
+    user_uuid = models.CharField(
+        max_length=40,
+        primary_key=True,
+        default=uuid.uuid4,
+        null=False,
+        db_column="uuid",
     )
     username = models.CharField(max_length=30, null=False, unique=True)
     password = models.CharField(max_length=100, null=False)
@@ -59,7 +63,8 @@ class Role(models.Model):
             table.
     """
 
-    name = models.CharField(max_length=50, primary_key=True)
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50, unique=True, null=False)
     description = models.CharField(max_length=150, null=True)
     created = models.DateTimeField(default=now)
     updated = models.DateTimeField(default=now)
@@ -86,7 +91,8 @@ class Permission(models.Model):
             permission.
     """
 
-    name = models.CharField(max_length=50, null=False, primary_key=True)
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50, null=False, unique=True)
     description = models.CharField(max_length=150, null=True)
     created = models.DateTimeField(default=now)
     updated = models.DateTimeField(default=now)
