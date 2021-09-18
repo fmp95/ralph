@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, TypedDict
 
 from django.http import HttpRequest
 from jose import JWTError, jwt
@@ -10,6 +10,35 @@ from ralph.common.logger import get_logger
 from settings import JWT_ALGORITHM, JWT_SECRET
 
 logger = get_logger(__name__)
+
+
+class AuthorizationResponse(TypedDict):
+
+    """
+    Structure of authorization response.
+
+    This class shows the types expected for the dictionary response of authorization.
+
+    Attributes:
+        uuid (str): User's unique identifier.
+        username (str): User's username.
+        first_name (str): User's first name..
+        last_name (str): User's last name.
+        email (str): User's e-mail address.
+        is_active (bool): Boolean that represents if user is active in system.
+        roles (List[str]): List containing name of every user's roles.
+        permissions (List[str]): List containing name of every user's permissions, based
+            on its roles.
+    """
+
+    uuid: str
+    username: str
+    first_name: str
+    last_name: str
+    email: str
+    is_active: bool
+    roles: List[str]
+    permissions: List[str]
 
 
 class Authorization(HttpBearer):
@@ -53,7 +82,7 @@ class Authorization(HttpBearer):
         # Set passed permissions as instance parameter.
         self.permissions = permissions or []
 
-    def authenticate(self, request: HttpRequest, token: str) -> dict:
+    def authenticate(self, request: HttpRequest, token: str) -> AuthorizationResponse:
 
         """
         Authenticate access based on configuration passed to constructor.
@@ -114,16 +143,16 @@ class Authorization(HttpBearer):
             logger.warning("User doesn't have necessary authorization.")
             raise UnauthorizedException
 
-        return {
-            "uuid": decoded_token.get("iss"),
-            "username": user.username,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "email": user.email,
-            "is_active": user.is_active,
-            "roles": user_roles,
-            "permissions": user_permissions,
-        }
+        return AuthorizationResponse(
+            uuid=decoded_token.get("iss"),
+            username=user.username,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+            is_active=user.is_active,
+            roles=user_roles,
+            permissions=user_permissions,
+        )
 
     @staticmethod
     def decode_token(token: str) -> Dict[str, str]:
