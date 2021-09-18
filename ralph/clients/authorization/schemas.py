@@ -1,7 +1,7 @@
-from ninja import Schema
+from ralph.common.schemas import BaseModel
 
 
-class LoginSchema(Schema):
+class LoginSchema(BaseModel):
 
     """
     Credentials insertion schema.
@@ -15,7 +15,7 @@ class LoginSchema(Schema):
     password: str
 
 
-class TokenOut(Schema):
+class TokenOut(BaseModel):
 
     """
     Response for valid credentials.
