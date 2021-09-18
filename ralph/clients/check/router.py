@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from ninja import Router
 
 from ralph.clients.authorization.auth import Authorization
@@ -6,7 +7,7 @@ router = Router()
 
 
 @router.get("/healthcheck")
-def healthcheck(request: object) -> dict:
+def healthcheck(request: HttpRequest) -> dict:
 
     """
     Basic healthcheck endpoint.
@@ -18,7 +19,7 @@ def healthcheck(request: object) -> dict:
 
 
 @router.get("/login-check", auth=Authorization())
-def login_check(request: object) -> dict:
+def login_check(request: HttpRequest) -> dict:
 
     """
     Basic authorization endpoint for token.
@@ -31,7 +32,7 @@ def login_check(request: object) -> dict:
 
 
 @router.get("/role-check", auth=Authorization(roles=["role_check"]))
-def role_check(request: object) -> dict:
+def role_check(request: HttpRequest) -> dict:
 
     """
     Basic authorization endpoint for role.
@@ -44,7 +45,7 @@ def role_check(request: object) -> dict:
 
 
 @router.get("/permission-check", auth=Authorization(permissions=["permission_check"]))
-def permission_check(request: object) -> dict:
+def permission_check(request: HttpRequest) -> dict:
 
     """
     Basic authorization endpoint for permission.

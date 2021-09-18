@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from ninja import Router
 
 from ralph.clients.authorization.methods import login
@@ -7,7 +8,7 @@ router = Router()
 
 
 @router.post("/login", response=TokenOut)
-def user_login(request: object, data: LoginSchema) -> TokenOut:
+def user_login(request: HttpRequest, data: LoginSchema) -> TokenOut:
 
     """
     Endpoint for user login.

@@ -35,7 +35,7 @@ logging.basicConfig(
 )
 
 
-def get_logger(name: str) -> object:
+def get_logger(name: str) -> logging.Logger:
 
     """
     Generates a logger with name of file where is writing the log.

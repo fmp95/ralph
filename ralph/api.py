@@ -1,3 +1,4 @@
+from django.http import HttpRequest, HttpResponse
 from ninja import NinjaAPI
 
 from ralph.clients.authorization.router import router as authentication_router
@@ -17,9 +18,9 @@ api.add_router("", check_router)
 # Add handler for UnauthorizedException.
 @api.exception_handler(UnauthorizedException)
 def on_not_authorized(
-    request: object,
+    request: HttpRequest,
     exc: UnauthorizedException,  # pylint: disable = unused-argument
-) -> object:
+) -> HttpResponse:
 
     """
     Handler when user tries to access unauthorized content.
@@ -31,9 +32,9 @@ def on_not_authorized(
 # Add handler for InvalidTokenException.
 @api.exception_handler(InvalidTokenException)
 def on_invalid_token(
-    request: object,
+    request: HttpRequest,
     exc: InvalidTokenException,  # pylint: disable = unused-argument
-) -> object:
+) -> HttpResponse:
 
     """
     Handler when invalid token is passed to authorization.
@@ -45,9 +46,9 @@ def on_invalid_token(
 # Add handler for InvalidCredentialException.
 @api.exception_handler(InvalidCredentialException)
 def on_invalid_credential(
-    request: object,
+    request: HttpRequest,
     exc: InvalidCredentialException,  # pylint: disable = unused-argument
-) -> object:
+) -> HttpResponse:
 
     """
     Handler when credentials are incorrect.

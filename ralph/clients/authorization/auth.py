@@ -205,7 +205,7 @@ class Authorization(HttpBearer):
             raise InvalidTokenException from exc
 
     @staticmethod
-    def get_user_roles(user: object) -> List[str]:
+    def get_user_roles(user: User) -> List[str]:
 
         """
         Get user roles names.
@@ -214,7 +214,7 @@ class Authorization(HttpBearer):
         name of all roles.
 
         Args:
-            user (object):
+            user (User):
 
         Returns:
             List[str]: List of role names.
