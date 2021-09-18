@@ -1,4 +1,4 @@
-import uuid
+import uuid as _uuid
 
 from django.db.models import (
     AutoField,
@@ -31,10 +31,10 @@ class User(Model):
         roles (ManyToManyField): MANYTOMANY relation between user table and role table.
     """
 
-    user_uuid = CharField(
+    uuid = CharField(
         max_length=40,
         primary_key=True,
-        default=uuid.uuid4,
+        default=str(_uuid.uuid4()),
         null=False,
         db_column="uuid",
     )
