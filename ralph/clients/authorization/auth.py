@@ -146,7 +146,7 @@ class Authorization(HttpBearer):
             logger.info("Token is valid.")
             decoded_token = jwt.decode(token, JWT_SECRET, JWT_ALGORITHM)
         except JWTError as exc:
-            logger.warning("Token is not valid.")
+            logger.warning("Token is not valid. Error: %s.", str(exc))
             raise InvalidTokenException from exc
 
         return decoded_token
@@ -168,7 +168,9 @@ class Authorization(HttpBearer):
 
         # Try to get user object.
         try:
-            return User.objects.prefetch_related("roles").filter(uuid=user_uuid).get()
+            return (
+                User.objects.prefetch_related("roles").filter(user_uuid=user_uuid).get()
+            )
         except User.DoesNotExist as exc:
             logger.warning("User doesn't exist.")
             raise InvalidTokenException from exc
