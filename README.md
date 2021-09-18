@@ -1,5 +1,7 @@
-<p align="center" style="font-size: 3em">RALPH</p>
-<p align="center">![main](https://github.com/fmp95/ralph/actions/workflows/main.yml/badge.svg) ![development](https://github.com/fmp95/ralph/actions/workflows/development.yml/badge.svg)</p>
+<p align="center" style="font-size: 10rem">RALPH</p>
+
+
+![main](https://github.com/fmp95/ralph/actions/workflows/main.yml/badge.svg) ![development](https://github.com/fmp95/ralph/actions/workflows/development.yml/badge.svg)
 
 
 <hr>
